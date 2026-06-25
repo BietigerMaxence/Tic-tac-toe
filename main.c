@@ -15,7 +15,7 @@ void display_board(char a_board[3][3]) {
     }
 }
 
-char play_game(int a_case, char a_board[3][3], int a_move_number) {
+void play_game(int a_case, char a_board[3][3], int a_move_number) {
     int ligne   = (a_case - 1) / 3;      // division entière
     int colonne = (a_case - 1) % 3;      // modulo
 
@@ -41,9 +41,23 @@ int main() {
 
     while (move_number < 5) {
         printf("Sur quelle case voulez-vous jouer ? \n");
-        scanf("%d", &play_case); // NOLINT(cert-err34-c)
-
-        play_game(play_case, board, move_number);
-        move_number++;
+        if (scanf("%d", &play_case) == 1) { // NOLINT(cert-err34-c)
+            if (play_case > 0 && play_case < 10) {
+                play_game(play_case, board, move_number);
+                move_number++;
+                continue;
+            }else{
+                printf("Invalid case, choose another one:\n");
+                int c;
+                while ((c = getchar()) != '\n' && c != EOF) { }
+                continue;
+            }
+        }else{
+            printf("Invalid number, choose another one between 1 and 9:\n");
+            int c;
+            while ((c = getchar()) != '\n' && c != EOF) { }
+            continue;
+        }
     }
+    return 0;
 }
