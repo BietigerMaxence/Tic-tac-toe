@@ -27,6 +27,19 @@ void play_game(int a_case, char a_board[3][3], int a_move_number) {
     display_board(a_board);
 }
 
+char check_winner(char a_board[3][3]) {
+    //Detect the line winner
+    for (int i = 0; i < 3; i++) {
+        if (a_board[i][0] == a_board[i][1] && a_board[i][1] == a_board[i][2] != '.') {
+            return a_board[i][0];
+        }
+        //Detect the column winner
+        if (a_board[0][i] != a_board[1][i] && a_board[1][i] == a_board[2][i] != '.') {
+            return a_board[0][i];
+        }
+    }
+}
+
 int main() {
     int play_case;
     int move_number = 0;
