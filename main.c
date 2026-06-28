@@ -15,36 +15,50 @@ void display_board(char a_board[3][3]) {
     }
 }
 
-void play_game(int a_case, char a_board[3][3], int a_move_number) {
-    int ligne   = (a_case - 1) / 3;      // division entière
-    int colonne = (a_case - 1) % 3;      // modulo
+bool play_game(int a_case, char a_board[3][3], int a_move_number) {
+    int ligne   = (a_case - 1) / 3;
+    int colonne = (a_case - 1) % 3;
 
-    if (a_move_number % 2 == 0) {
-        a_board[ligne][colonne] = 'X';
-    }else {
-        a_board[ligne][colonne] = 'O';
+    if (a_board[ligne][colonne] == '.') {
+        if (a_move_number % 2 == 0) {
+            a_board[ligne][colonne] = 'X';
+        }else {
+            a_board[ligne][colonne] = 'O';
+        }
+        display_board(a_board);
+    } else {
+        return false;
     }
-    display_board(a_board);
 }
 
 char check_winner(char a_board[3][3]) {
     //Detect the line winner
+
+    if (a_board[0][0] == a_board[1][1] && a_board[0][0] == a_board[2][2] && a_board[0][0] != '.') {
+        return a_board[0][0];
+    }
+
+    if (a_board[0][2] == a_board[1][1] && a_board[0][2] == a_board[2][0] && a_board[0][2] != '.') {
+        return a_board[0][2];
+    }
+
     for (int i = 0; i < 3; i++) {
-        if (a_board[i][0] == a_board[i][1] && a_board[i][1] == a_board[i][2] != '.') {
+        if (a_board[i][0] == a_board[i][1] && a_board[i][1] == a_board[i][2] && a_board[i][0] != '.') {
             return a_board[i][0];
         }
         //Detect the column winner
-        if (a_board[0][i] != a_board[1][i] && a_board[1][i] == a_board[2][i] != '.') {
+        if (a_board[0][i] == a_board[1][i] && a_board[1][i] == a_board[2][i] && a_board[0][i] != '.') {
             return a_board[0][i];
         }
     }
+    return '.';
 }
 
 int main() {
     int play_case;
     int move_number = 0;
-
     char board[3][3];
+
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
             board[i][j] = '.';
@@ -52,13 +66,19 @@ int main() {
     }
     display_board(board);
 
-    while (move_number < 5) {
-        printf("Sur quelle case voulez-vous jouer ? \n");
+    while (check_winner(board) == '.' && move_number < 9) {
+        printf("On wich case do you want to play ? \n");
         if (scanf("%d", &play_case) == 1) { // NOLINT(cert-err34-c)
             if (play_case > 0 && play_case < 10) {
                 play_game(play_case, board, move_number);
+                // if (play_game(play_case, board, move_number) != false) {
+                //
+                // }else {
+                //     printf("This case is already use, choose another one !\n");
+                // }
                 move_number++;
                 continue;
+
             }else{
                 printf("Invalid case, choose another one:\n");
                 int c;
@@ -72,5 +92,16 @@ int main() {
             continue;
         }
     }
-    return 0;
+
+    if (move_number == 9 && check_winner(board) == '.') {
+        printf("Draw, no one win !");
+        return 0;
+    }
+    if (check_winner(board) == 'X') {
+        printf("The winner is player1! (X)\n");
+        return 0;
+    } else {
+        printf("The winner is player2! (O)\n");
+        return 0;
+    }
 }
