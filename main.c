@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdbool.h>
 
 void display_board(char a_board[3][3]) {
     printf("---+---+---\n");
@@ -17,23 +18,24 @@ void display_board(char a_board[3][3]) {
 
 bool play_game(int a_case, char a_board[3][3], int a_move_number) {
     int ligne   = (a_case - 1) / 3;
-    int colonne = (a_case - 1) % 3;
+    int column = (a_case - 1) % 3;
 
-    if (a_board[ligne][colonne] == '.') {
+    if (a_board[ligne][column] == '.') {
         if (a_move_number % 2 == 0) {
-            a_board[ligne][colonne] = 'X';
+            a_board[ligne][column] = 'X';
         }else {
-            a_board[ligne][colonne] = 'O';
+            a_board[ligne][column] = 'O';
         }
         display_board(a_board);
+        return true;
     } else {
         return false;
     }
 }
 
 char check_winner(char a_board[3][3]) {
-    //Detect the line winner
 
+    //Detect the column winner
     if (a_board[0][0] == a_board[1][1] && a_board[0][0] == a_board[2][2] && a_board[0][0] != '.') {
         return a_board[0][0];
     }
@@ -42,6 +44,7 @@ char check_winner(char a_board[3][3]) {
         return a_board[0][2];
     }
 
+    //Detect the line winner
     for (int i = 0; i < 3; i++) {
         if (a_board[i][0] == a_board[i][1] && a_board[i][1] == a_board[i][2] && a_board[i][0] != '.') {
             return a_board[i][0];
@@ -67,16 +70,15 @@ int main() {
     display_board(board);
 
     while (check_winner(board) == '.' && move_number < 9) {
-        printf("On wich case do you want to play ? \n");
+        printf("On which case do you want to play ? \n");
         if (scanf("%d", &play_case) == 1) { // NOLINT(cert-err34-c)
             if (play_case > 0 && play_case < 10) {
-                play_game(play_case, board, move_number);
-                // if (play_game(play_case, board, move_number) != false) {
-                //
-                // }else {
-                //     printf("This case is already use, choose another one !\n");
-                // }
-                move_number++;
+                bool placed = play_game(play_case, board, move_number);
+                if (placed) {
+                    move_number++;
+                }else {
+                    printf("This case is already used, choose another one !\n");
+                }
                 continue;
 
             }else{
